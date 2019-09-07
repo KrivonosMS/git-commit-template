@@ -1,0 +1,30 @@
+<idea-plugin>
+    <id>git-commit-template</id>
+    <name>Git Commit Template</name>
+    <vendor email="ezhdenis@yandex.ru" url="https://ezhov-da.github.io/">Ezhov Denis</vendor>
+
+    <description><![CDATA[
+    Plugin for Git Commit Template 1111111111111111111111111111111111111111111
+    ]]></description>
+
+    <depends>com.intellij.modules.vcs</depends>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <action id="Commit.Button" class="ru.ezhov.git.commit.template.gui.CreateCommitAction"
+                text="Create commit message"
+                description="Create commit message"
+                icon="PluginIcons.LOAD">
+            <add-to-group group-id="Vcs.MessageActionGroup" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
