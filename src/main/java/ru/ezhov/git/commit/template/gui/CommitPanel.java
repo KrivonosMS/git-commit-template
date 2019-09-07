@@ -35,14 +35,6 @@ class CommitPanel extends JPanel {
         add(new CenterPanel(), BorderLayout.CENTER);
         add(new BottomPanel(), BorderLayout.SOUTH);
 
-//        for (ChangeType type : ChangeType.values()) {
-//            changeType.addItem(type);
-//        }
-//        File workingDirectory = VfsUtil.virtualToIoFile(project.getBaseDir());
-//        Command.Result result = new Command(workingDirectory, "git log --all --format=%s | grep -Eo '^[a-z]+(\\(.*\\)):.*$' | sed 's/^.*(\\(.*\\)):.*$/\\1/' | sort -n | uniq").execute();
-//        if (result.isSuccess()) {
-//            result.getOutput().forEach(changeScopeLocal::addItem);
-//        }
 
         setPreferredSize(new Dimension(600, 600));
     }
