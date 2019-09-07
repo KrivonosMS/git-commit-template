@@ -4,7 +4,9 @@
     <vendor email="ezhdenis@yandex.ru" url="https://ezhov-da.github.io/">Ezhov Denis</vendor>
 
     <description><![CDATA[
-    Plugin for Git Commit Template 1111111111111111111111111111111111111111111
+    Plugin for Git Commit Template.
+
+    By default GIT Store location in: ${user.home}/.git-commit-template/git-store.xml
     ]]></description>
 
     <depends>com.intellij.modules.vcs</depends>

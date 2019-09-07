@@ -2,7 +2,7 @@ package ru.ezhov.git.commit.template.gui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
-import ru.ezhov.git.commit.template.ChangeType;
+import com.intellij.ui.JBSplitter;
 import ru.ezhov.git.commit.template.model.domain.CommitMessage;
 import ru.ezhov.git.commit.template.model.domain.ScopeOfChange;
 import ru.ezhov.git.commit.template.model.domain.TypeOfChange;
@@ -20,29 +20,16 @@ class CommitPanel extends JPanel {
     private JTextPane longDescription;
     private JTextField metaInformation;
     private JTextPane breakingChanges;
+    private GitCommitRepository gitCommitRepository;
 
     CommitPanel(GitCommitRepository gitCommitRepository, Project project) {
         super(new BorderLayout());
+        this.gitCommitRepository = gitCommitRepository;
 
-        List<TypeOfChange> typeOfChanges = gitCommitRepository.typesOfChanges();
-        TypeOfChange[] typeOfChangesArray = new TypeOfChange[typeOfChanges.size()];
-        typeOfChanges.toArray(typeOfChangesArray);
-        changeType = new ComboBox(typeOfChangesArray);
-
-        List<ScopeOfChange> scopeOfChanges = gitCommitRepository.localScopeOfChanges();
-        ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
-        scopeOfChanges.toArray(scopeOfChangesArray);
-        changeScopeLocal = new ComboBox(scopeOfChangesArray);
-
-        scopeOfChanges = gitCommitRepository.gitLogScopeOfChanges();
-        scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
-        scopeOfChanges.toArray(scopeOfChangesArray);
-        changeScopeGit = new ComboBox<>(scopeOfChangesArray);
-
-        shortDescription = new JTextField();
-        longDescription = new JTextPane();
-        breakingChanges = new JTextPane();
-        metaInformation = new JTextField();
+        //        scopeOfChanges = gitCommitRepository.gitLogScopeOfChanges();
+//        scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
+//        scopeOfChanges.toArray(scopeOfChangesArray);
+//        changeScopeGit = new ComboBox<>(scopeOfChangesArray);
 
         add(new TopPanel(), BorderLayout.NORTH);
         add(new CenterPanel(), BorderLayout.CENTER);
@@ -56,20 +43,25 @@ class CommitPanel extends JPanel {
 //        if (result.isSuccess()) {
 //            result.getOutput().forEach(changeScopeLocal::addItem);
 //        }
+
+        setPreferredSize(new Dimension(600, 600));
     }
 
     CommitMessage getCommitMessage() {
-//        return new CommitMessage(
-//                ChangeType.BUILD,
-//                "changeScopeLocal",
-//                "shortDescription",
-//                "longDescription",
-//                "metaInformation",
-//                "breakingChanges"
-//        );
+        Object scopeOfChange = changeScopeLocal.getSelectedItem();
+        ScopeOfChange scope = null;
+        if (scopeOfChange != null) {
+            if (scopeOfChange instanceof String) {
+                String scopeText = scopeOfChange.toString();
+                scope = new ScopeOfChange(scopeText, scopeText, scopeText);
+            } else {
+                scope = (ScopeOfChange) changeScopeLocal.getSelectedItem();
+            }
+        }
+
         return CommitMessage.from(
                 (TypeOfChange) changeType.getSelectedItem(),
-                (ScopeOfChange) changeScopeLocal.getSelectedItem(),
+                scope,
                 shortDescription.getText().trim(),
                 longDescription.getText().trim(),
                 metaInformation.getText().trim(),
@@ -77,27 +69,112 @@ class CommitPanel extends JPanel {
         );
     }
 
+    JComponent getFocusedComponent() {
+        return changeType;
+    }
+
     private class TopPanel extends JPanel {
-        public TopPanel() {
+        TopPanel() {
             super(new BorderLayout());
-            add(changeType, BorderLayout.NORTH);
-            add(changeScopeLocal, BorderLayout.CENTER);
+            add(new ChangeTypePanel(), BorderLayout.NORTH);
+            add(new ChangeScopeLocalPanel(), BorderLayout.CENTER);
         }
     }
 
     private class CenterPanel extends JPanel {
-        public CenterPanel() {
+        CenterPanel() {
             super(new BorderLayout());
-            add(shortDescription, BorderLayout.NORTH);
-            add(new JScrollPane(longDescription), BorderLayout.CENTER);
+            add(new ShortDescriptionPanel(), BorderLayout.NORTH);
+
+            JBSplitter splitPane = new JBSplitter(true);
+            splitPane.setProportion(0.7F);
+            splitPane.setFirstComponent(new LongDescriptionPanel());
+            splitPane.setSecondComponent(new BreakingChangesPanel());
+            add(splitPane, BorderLayout.CENTER);
         }
     }
 
     private class BottomPanel extends JPanel {
-        public BottomPanel() {
+        BottomPanel() {
             super(new BorderLayout());
-            add(breakingChanges, BorderLayout.NORTH);
-            add(metaInformation, BorderLayout.CENTER);
+            add(new MetaInformationPanel(), BorderLayout.CENTER);
+        }
+    }
+
+
+    private class ChangeTypePanel extends JPanel {
+        ChangeTypePanel() {
+            super(new BorderLayout());
+            List<TypeOfChange> typeOfChanges = gitCommitRepository.typesOfChanges();
+            TypeOfChange[] typeOfChangesArray = new TypeOfChange[typeOfChanges.size()];
+            typeOfChanges.toArray(typeOfChangesArray);
+            changeType = new ComboBox(typeOfChangesArray);
+
+            setBorder(BorderFactory.createTitledBorder("Type of change"));
+//            JLabel label = new JLabel("Type of change");
+//            add(label, BorderLayout.NORTH);
+            add(changeType, BorderLayout.CENTER);
+        }
+    }
+
+    private class ChangeScopeLocalPanel extends JPanel {
+        ChangeScopeLocalPanel() {
+            super(new BorderLayout());
+            List<ScopeOfChange> scopeOfChanges = gitCommitRepository.localScopeOfChanges();
+            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
+            scopeOfChanges.toArray(scopeOfChangesArray);
+            changeScopeLocal = new ComboBox(scopeOfChangesArray);
+
+            setBorder(BorderFactory.createTitledBorder("Scope of this change"));
+//            JLabel label = new JLabel("Scope of this change");
+//            add(label, BorderLayout.NORTH);
+            changeScopeLocal.setEditable(true);
+            add(changeScopeLocal, BorderLayout.CENTER);
+        }
+    }
+
+    private class ShortDescriptionPanel extends JPanel {
+        ShortDescriptionPanel() {
+            super(new BorderLayout());
+            shortDescription = new JTextField();
+            setBorder(BorderFactory.createTitledBorder("Short description"));
+//            JLabel label = new JLabel("Scope of this change");
+//            add(label, BorderLayout.NORTH);
+            add(shortDescription, BorderLayout.CENTER);
+        }
+    }
+
+    private class LongDescriptionPanel extends JPanel {
+        LongDescriptionPanel() {
+            super(new BorderLayout());
+            longDescription = new JTextPane();
+            setBorder(BorderFactory.createTitledBorder("Long description"));
+//            JLabel label = new JLabel("Scope of this change");
+//            add(label, BorderLayout.NORTH);
+            add(new JScrollPane(longDescription), BorderLayout.CENTER);
+        }
+    }
+
+    private class BreakingChangesPanel extends JPanel {
+        BreakingChangesPanel() {
+            super(new BorderLayout());
+            breakingChanges = new JTextPane();
+            setBorder(BorderFactory.createTitledBorder("Breaking changes"));
+//            JLabel label = new JLabel("Scope of this change");
+//            add(label, BorderLayout.NORTH);
+            add(new JScrollPane(breakingChanges), BorderLayout.CENTER);
+        }
+    }
+
+    private class MetaInformationPanel extends JPanel {
+        MetaInformationPanel() {
+            super(new BorderLayout());
+            metaInformation = new JTextField();
+
+            setBorder(BorderFactory.createTitledBorder("Meta information"));
+//            JLabel label = new JLabel("Scope of this change");
+//            add(label, BorderLayout.NORTH);
+            add(new JScrollPane(metaInformation), BorderLayout.CENTER);
         }
     }
 }

@@ -44,6 +44,8 @@ public class XmlGitCommitRepository implements GitCommitRepository {
             if (typeOfChangesNodeList.getLength() > 0) {
                 fillTypeOfChanges(typeOfChangesNodeList);
             }
+        }
+        try (InputStream store = getStore()) {
             NodeList scopesOfChangeNodeList = (NodeList) xPath.evaluate("/git-commit/scopes-of-change/scope-of-change", new InputSource(store), XPathConstants.NODESET);
             if (scopesOfChangeNodeList.getLength() > 0) {
                 fillScopesOfChanges(scopesOfChangeNodeList);
