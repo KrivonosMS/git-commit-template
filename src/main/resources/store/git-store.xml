@@ -1,0 +1,69 @@
+<git-commit version="1">
+    <types-of-change>
+        <type-of-change>
+            <name>feat</name>
+            <title>Features</title>
+            <description>A new feature</description>
+        </type-of-change>
+        <type-of-change>
+            <name>fix</name>
+            <title>Bug Fixes</title>
+            <description>A bug fix</description>
+        </type-of-change>
+        <type-of-change>
+            <name>docs</name>
+            <title>Documentation</title>
+            <description>Documentation only changes</description>
+        </type-of-change>
+        <type-of-change>
+            <name>style</name>
+            <title>Styles</title>
+            <description>Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+            </description>
+        </type-of-change>
+        <type-of-change>
+            <name>refactor</name>
+            <title>Code Refactoring</title>
+            <description>A code change that neither fixes a bug nor adds a feature</description>
+        </type-of-change>
+        <type-of-change>
+            <name>perf</name>
+            <title>Performance Improvements</title>
+            <description>A code change that improves performance</description>
+        </type-of-change>
+        <type-of-change>
+            <name>test</name>
+            <title>Tests</title>
+            <description>Adding missing tests or correcting existing tests</description>
+        </type-of-change>
+        <type-of-change>
+            <name>build</name>
+            <title>Builds</title>
+            <description>Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+            </description>
+        </type-of-change>
+        <type-of-change>
+            <name>ci</name>
+            <title>Continuous Integrations</title>
+            <description>Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+            </description>
+        </type-of-change>
+        <type-of-change>
+            <name>chore</name>
+            <title>Chores</title>
+            <description>Other changes that don't modify src or test files</description>
+        </type-of-change>
+        <type-of-change>
+            <name>revert</name>
+            <title>Reverts</title>
+            <description>Reverts a previous commit</description>
+        </type-of-change>
+    </types-of-change>
+    <scopes-of-change>
+        <!--<scope-of-change>-->
+        <!--<name></name>-->
+        <!--<title></title>-->
+        <!--<description></description>-->
+        <!--</scope-of-change>-->
+    </scopes-of-change>
+</git-commit>
