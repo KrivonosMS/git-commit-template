@@ -19,10 +19,10 @@ public class CommitMessage {
     private String buildContent(TypeOfChange changeType, ScopeOfChange changeScope, String shortDescription, String longDescription, String closedIssues, String breakingChanges) {
         StringBuilder builder = new StringBuilder();
         builder.append(changeType.getName());
-        if (isNotBlank(changeScope.getName())) {
+        if (changeScope != null/*isNotBlank(changeScope.getName())*/) {
             builder
                     .append('(')
-                    .append(changeScope)
+                    .append(changeScope.getName())
                     .append(')');
         }
         builder

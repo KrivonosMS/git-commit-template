@@ -26,6 +26,12 @@ public class CommitDialog extends DialogWrapper {
         return panel;
     }
 
+    @Nullable
+    @Override
+    public JComponent getPreferredFocusedComponent() {
+        return panel.getFocusedComponent();
+    }
+
     CommitMessage getCommitMessage() {
         return panel.getCommitMessage();
     }
