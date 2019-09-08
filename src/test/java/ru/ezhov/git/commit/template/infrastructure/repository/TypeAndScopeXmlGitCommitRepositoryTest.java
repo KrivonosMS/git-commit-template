@@ -4,19 +4,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class XmlGitCommitRepositoryTest {
+public class TypeAndScopeXmlGitCommitRepositoryTest {
 
     @Test
     public void typesOfChanges() {
-        XmlGitCommitRepository repository = new XmlGitCommitRepository();
+        TypeAndScopeXmlGitCommitRepository repository = new TypeAndScopeXmlGitCommitRepository();
         assertNotEquals(0, repository.typesOfChanges());
     }
 
     @Test
-    public void localScopeOfChanges() {
+    public void scopesOfChanges() {
     }
 
-    @Test
-    public void gitLogScopeOfChanges() {
-    }
 }

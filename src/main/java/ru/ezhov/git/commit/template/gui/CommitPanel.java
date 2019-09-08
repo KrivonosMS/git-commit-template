@@ -3,13 +3,17 @@ package ru.ezhov.git.commit.template.gui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.JBSplitter;
+import ru.ezhov.git.commit.template.infrastructure.repository.GitLogScopeGitCommitRepository;
+import ru.ezhov.git.commit.template.infrastructure.repository.TypeAndScopeXmlGitCommitRepository;
 import ru.ezhov.git.commit.template.model.domain.CommitMessage;
 import ru.ezhov.git.commit.template.model.domain.ScopeOfChange;
 import ru.ezhov.git.commit.template.model.domain.TypeOfChange;
-import ru.ezhov.git.commit.template.model.repository.GitCommitRepository;
+import ru.ezhov.git.commit.template.model.repository.ScopesOfChangeRepository;
+import ru.ezhov.git.commit.template.model.repository.TypesOfChangeRepository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 
 class CommitPanel extends JPanel {
@@ -20,37 +24,26 @@ class CommitPanel extends JPanel {
     private JTextPane longDescription;
     private JTextField metaInformation;
     private JTextPane breakingChanges;
-    private GitCommitRepository gitCommitRepository;
+    private TypesOfChangeRepository typesOfChangeRepository;
+    private ScopesOfChangeRepository scopesOfChangeRepositoryLocal;
+    private ScopesOfChangeRepository scopesOfChangeRepositoryGit;
 
-    CommitPanel(GitCommitRepository gitCommitRepository, Project project) {
+    CommitPanel(Project project) {
         super(new BorderLayout());
-        this.gitCommitRepository = gitCommitRepository;
-
-        //        scopeOfChanges = gitCommitRepository.gitLogScopeOfChanges();
-//        scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
-//        scopeOfChanges.toArray(scopeOfChangesArray);
-//        changeScopeGit = new ComboBox<>(scopeOfChangesArray);
+        TypeAndScopeXmlGitCommitRepository typeAndScopeXmlGitCommitRepository = new TypeAndScopeXmlGitCommitRepository();
+        this.typesOfChangeRepository = typeAndScopeXmlGitCommitRepository;
+        this.scopesOfChangeRepositoryLocal = typeAndScopeXmlGitCommitRepository;
+        this.scopesOfChangeRepositoryGit = new GitLogScopeGitCommitRepository(new File(project.getBasePath()));
 
         add(new TopPanel(), BorderLayout.NORTH);
         add(new CenterPanel(), BorderLayout.CENTER);
         add(new BottomPanel(), BorderLayout.SOUTH);
 
-
         setPreferredSize(new Dimension(600, 600));
     }
 
     CommitMessage getCommitMessage() {
-        Object scopeOfChange = changeScopeLocal.getSelectedItem();
-        ScopeOfChange scope = null;
-        if (scopeOfChange != null) {
-            if (scopeOfChange instanceof String) {
-                String scopeText = scopeOfChange.toString();
-                scope = new ScopeOfChange(scopeText, scopeText, scopeText);
-            } else {
-                scope = (ScopeOfChange) changeScopeLocal.getSelectedItem();
-            }
-        }
-
+        ScopeOfChange scope = getScopeOfChange();
         return CommitMessage.from(
                 (TypeOfChange) changeType.getSelectedItem(),
                 scope,
@@ -61,6 +54,34 @@ class CommitPanel extends JPanel {
         );
     }
 
+    private ScopeOfChange getScopeOfChange() {
+        ScopeOfChange scope = null;
+        Object gitScopeOfChange = changeScopeGit.getSelectedItem();
+        if (gitScopeOfChange != null && !"".equals(gitScopeOfChange)) {
+            System.out.println("gitScopeOfChange" + gitScopeOfChange);
+            if (gitScopeOfChange instanceof String) {
+                String scopeText = gitScopeOfChange.toString();
+                scope = new ScopeOfChange(scopeText, scopeText, scopeText);
+            } else {
+                scope = (ScopeOfChange) changeScopeGit.getSelectedItem();
+            }
+        } else {
+            Object localScopeOfChange = changeScopeLocal.getSelectedItem();
+            System.out.println("localScopeOfChange" + localScopeOfChange);
+            if (localScopeOfChange != null && !"".equals(localScopeOfChange)) {
+                if (localScopeOfChange instanceof String) {
+                    String scopeText = localScopeOfChange.toString();
+                    scope = new ScopeOfChange(scopeText, scopeText, scopeText);
+                } else {
+                    scope = (ScopeOfChange) changeScopeLocal.getSelectedItem();
+                }
+            }
+        }
+
+
+        return scope;
+    }
+
     JComponent getFocusedComponent() {
         return changeType;
     }
@@ -69,7 +90,13 @@ class CommitPanel extends JPanel {
         TopPanel() {
             super(new BorderLayout());
             add(new ChangeTypePanel(), BorderLayout.NORTH);
-            add(new ChangeScopeLocalPanel(), BorderLayout.CENTER);
+
+            JBSplitter splitPane = new JBSplitter();
+            splitPane.setProportion(0.7F);
+            splitPane.setFirstComponent(new ChangeScopeLocalPanel());
+            splitPane.setSecondComponent(new GitLogChangeScopeLocalPanel());
+
+            add(splitPane, BorderLayout.CENTER);
         }
     }
 
@@ -97,14 +124,12 @@ class CommitPanel extends JPanel {
     private class ChangeTypePanel extends JPanel {
         ChangeTypePanel() {
             super(new BorderLayout());
-            List<TypeOfChange> typeOfChanges = gitCommitRepository.typesOfChanges();
+            List<TypeOfChange> typeOfChanges = typesOfChangeRepository.typesOfChanges();
             TypeOfChange[] typeOfChangesArray = new TypeOfChange[typeOfChanges.size()];
             typeOfChanges.toArray(typeOfChangesArray);
             changeType = new ComboBox(typeOfChangesArray);
 
             setBorder(BorderFactory.createTitledBorder("Type of change"));
-//            JLabel label = new JLabel("Type of change");
-//            add(label, BorderLayout.NORTH);
             add(changeType, BorderLayout.CENTER);
         }
     }
@@ -112,16 +137,28 @@ class CommitPanel extends JPanel {
     private class ChangeScopeLocalPanel extends JPanel {
         ChangeScopeLocalPanel() {
             super(new BorderLayout());
-            List<ScopeOfChange> scopeOfChanges = gitCommitRepository.localScopeOfChanges();
+            List<ScopeOfChange> scopeOfChanges = scopesOfChangeRepositoryLocal.scopesOfChange();
             ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
             scopeOfChanges.toArray(scopeOfChangesArray);
             changeScopeLocal = new ComboBox(scopeOfChangesArray);
 
-            setBorder(BorderFactory.createTitledBorder("Scope of this change"));
-//            JLabel label = new JLabel("Scope of this change");
-//            add(label, BorderLayout.NORTH);
+            setBorder(BorderFactory.createTitledBorder("Local scope of this change"));
             changeScopeLocal.setEditable(true);
             add(changeScopeLocal, BorderLayout.CENTER);
+        }
+    }
+
+    private class GitLogChangeScopeLocalPanel extends JPanel {
+        GitLogChangeScopeLocalPanel() {
+            super(new BorderLayout());
+            List<ScopeOfChange> scopeOfChanges = scopesOfChangeRepositoryGit.scopesOfChange();
+            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
+            scopeOfChanges.toArray(scopeOfChangesArray);
+            changeScopeGit = new ComboBox(scopeOfChangesArray);
+
+            setBorder(BorderFactory.createTitledBorder("Git scope of this change"));
+            changeScopeGit.setEditable(true);
+            add(changeScopeGit, BorderLayout.CENTER);
         }
     }
 
@@ -130,8 +167,6 @@ class CommitPanel extends JPanel {
             super(new BorderLayout());
             shortDescription = new JTextField();
             setBorder(BorderFactory.createTitledBorder("Short description"));
-//            JLabel label = new JLabel("Scope of this change");
-//            add(label, BorderLayout.NORTH);
             add(shortDescription, BorderLayout.CENTER);
         }
     }
@@ -141,8 +176,6 @@ class CommitPanel extends JPanel {
             super(new BorderLayout());
             longDescription = new JTextPane();
             setBorder(BorderFactory.createTitledBorder("Long description"));
-//            JLabel label = new JLabel("Scope of this change");
-//            add(label, BorderLayout.NORTH);
             add(new JScrollPane(longDescription), BorderLayout.CENTER);
         }
     }
@@ -152,8 +185,6 @@ class CommitPanel extends JPanel {
             super(new BorderLayout());
             breakingChanges = new JTextPane();
             setBorder(BorderFactory.createTitledBorder("Breaking changes"));
-//            JLabel label = new JLabel("Scope of this change");
-//            add(label, BorderLayout.NORTH);
             add(new JScrollPane(breakingChanges), BorderLayout.CENTER);
         }
     }
@@ -164,8 +195,6 @@ class CommitPanel extends JPanel {
             metaInformation = new JTextField();
 
             setBorder(BorderFactory.createTitledBorder("Meta information"));
-//            JLabel label = new JLabel("Scope of this change");
-//            add(label, BorderLayout.NORTH);
             add(new JScrollPane(metaInformation), BorderLayout.CENTER);
         }
     }
