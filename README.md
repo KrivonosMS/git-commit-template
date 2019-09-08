@@ -16,7 +16,7 @@ This plugin allows to create a commit message with the following template:
 
 Install directly from the IDE plugin manager:
 
-1. Download [latest release](releases/latest)
+1. Download [latest release](https://github.com/ezhov-da/git-commit-template/releases/latest)
 
 1. Install from disk
 > File > Settings > Plugins > Settings > Install Plugin From Disk > Choose downloaded .zip file
