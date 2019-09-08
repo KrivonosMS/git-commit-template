@@ -3,7 +3,6 @@ package ru.ezhov.git.commit.template.gui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
-import ru.ezhov.git.commit.template.infrastructure.repository.TypeAndScopeXmlGitCommitRepository;
 import ru.ezhov.git.commit.template.model.domain.CommitMessage;
 
 import javax.swing.*;
