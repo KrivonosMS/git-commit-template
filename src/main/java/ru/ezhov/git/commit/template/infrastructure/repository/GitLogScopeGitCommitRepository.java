@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class GitLogScopeGitCommitRepository implements ScopesOfChangeRepository {
     private static final String GIT_LOG_COMMAND = "git log --all --format=%s";
