@@ -6,9 +6,12 @@ import ru.ezhov.git.commit.template.model.repository.ScopesOfChangeRepository;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GitLogScopeGitCommitRepository implements ScopesOfChangeRepository {
     private static final String GIT_LOG_COMMAND = "git log --all --format=%s";
@@ -31,20 +34,28 @@ public class GitLogScopeGitCommitRepository implements ScopesOfChangeRepository 
     private void initGitLogScopeOfChanges() {
         Command.Result result = new Command(workingDirectory, GIT_LOG_COMMAND).execute();
         if (result.isSuccess()) {
+            Set<String> scopes = new HashSet<>();
             String output = result.getOutput();
-
             Pattern pattern = Pattern.compile("^[a-z]+(\\(.*\\)):");
-            Matcher matcher = pattern.matcher(output);
-            while (matcher.find()) {
-                String find = matcher.group();
-                String clearText = clearText(find);
-                gitLogScopeOfChanges.add(new ScopeOfChange(clearText, clearText, clearText) {
+            String[] lines = output.split(System.lineSeparator());
+            for (String line : lines) {
+                Matcher matcher = pattern.matcher(line);
+                while (matcher.find()) {
+                    String find = matcher.group();
+                    String clearText = clearText(find);
+                    scopes.add(clearText);
+                }
+            }
+
+            scopes.stream().sorted(String::compareTo).forEach(s -> {
+                gitLogScopeOfChanges.add(new ScopeOfChange(s, s, s) {
                     @Override
                     public String toString() {
                         return getName();
                     }
                 });
-            }
+
+            });
         }
     }
 
