@@ -1,5 +1,7 @@
 # Git commit template Plugin for IntelliJ
 
+**Thanks [MobileTribe](https://github.com/MobileTribe/commit-template-idea-plugin) for the idea and example.**
+
 This plugin allows to create a commit message with the following template:
 
 ```
