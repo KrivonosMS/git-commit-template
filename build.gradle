@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'ru.ezhov'
-version '0.0.3'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
@@ -21,6 +21,6 @@ intellij {
 }
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      Release version
+      """
 }

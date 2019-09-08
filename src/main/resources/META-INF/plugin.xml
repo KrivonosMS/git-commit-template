@@ -6,8 +6,18 @@
     <description><![CDATA[
     Plugin for Git Commit Template.
 
+    <pre>
+    &lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+    &lt;BLANK LINE&gt;
+    &lt;body&gt;
+    &lt;BLANK LINE&gt;
+    &lt;footer&gt;
+    </pre>
+
     By default GIT Store location in: ${user.home}/.git-commit-template/git-store.xml
     ]]></description>
+
+    <idea-version since-build="145.0"/>
 
     <depends>com.intellij.modules.vcs</depends>
 
