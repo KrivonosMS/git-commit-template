@@ -5,7 +5,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import ru.ezhov.git.commit.template.model.domain.ScopeOfChange;
 import ru.ezhov.git.commit.template.model.domain.TypeOfChange;
-import ru.ezhov.git.commit.template.model.repository.GitCommitRepository;
+import ru.ezhov.git.commit.template.model.repository.ScopesOfChangeRepository;
+import ru.ezhov.git.commit.template.model.repository.TypesOfChangeRepository;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -17,16 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class XmlGitCommitRepository implements GitCommitRepository {
+public class TypeAndScopeXmlGitCommitRepository implements TypesOfChangeRepository, ScopesOfChangeRepository {
     private static final String STORE_NAME = "git-store.xml";
     private static final String INNER_STORE_PATH = "/store";
     private static final String EXTERNAL_STORE_DIRECTORY_PATH = System.getProperty("user.home") + File.separator + ".git-commit-template";
 
     private List<TypeOfChange> typeOfChanges = new ArrayList<>();
     private List<ScopeOfChange> localScopeOfChanges = new ArrayList<>();
-    private List<ScopeOfChange> gitLogScopeOfChanges = new ArrayList<>();
 
-    public XmlGitCommitRepository() {
+    public TypeAndScopeXmlGitCommitRepository() {
         try {
             init();
         } catch (IOException e) {
@@ -136,12 +136,8 @@ public class XmlGitCommitRepository implements GitCommitRepository {
     }
 
     @Override
-    public List<ScopeOfChange> localScopeOfChanges() {
+    public List<ScopeOfChange> scopesOfChange() {
         return localScopeOfChanges;
     }
 
-    @Override
-    public List<ScopeOfChange> gitLogScopeOfChanges() {
-        return gitLogScopeOfChanges;
-    }
 }
