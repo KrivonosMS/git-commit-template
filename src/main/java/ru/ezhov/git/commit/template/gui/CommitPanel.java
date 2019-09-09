@@ -58,7 +58,6 @@ class CommitPanel extends JPanel {
         ScopeOfChange scope = null;
         Object gitScopeOfChange = changeScopeGit.getSelectedItem();
         if (gitScopeOfChange != null && !"".equals(gitScopeOfChange)) {
-            System.out.println("gitScopeOfChange" + gitScopeOfChange);
             if (gitScopeOfChange instanceof String) {
                 String scopeText = gitScopeOfChange.toString();
                 scope = new ScopeOfChange(scopeText, scopeText, scopeText);
@@ -67,7 +66,6 @@ class CommitPanel extends JPanel {
             }
         } else {
             Object localScopeOfChange = changeScopeLocal.getSelectedItem();
-            System.out.println("localScopeOfChange" + localScopeOfChange);
             if (localScopeOfChange != null && !"".equals(localScopeOfChange)) {
                 if (localScopeOfChange instanceof String) {
                     String scopeText = localScopeOfChange.toString();
@@ -92,9 +90,9 @@ class CommitPanel extends JPanel {
             add(new ChangeTypePanel(), BorderLayout.NORTH);
 
             JBSplitter splitPane = new JBSplitter();
-            splitPane.setProportion(0.7F);
-            splitPane.setFirstComponent(new ChangeScopeLocalPanel());
-            splitPane.setSecondComponent(new GitLogChangeScopeLocalPanel());
+            splitPane.setProportion(0.3F);
+            splitPane.setFirstComponent(new GitLogChangeScopeLocalPanel());
+            splitPane.setSecondComponent(new ChangeScopeLocalPanel());
 
             add(splitPane, BorderLayout.CENTER);
         }

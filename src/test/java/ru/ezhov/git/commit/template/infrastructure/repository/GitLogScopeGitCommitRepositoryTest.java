@@ -6,8 +6,6 @@ import ru.ezhov.git.commit.template.model.domain.ScopeOfChange;
 import java.io.File;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class GitLogScopeGitCommitRepositoryTest {
     @Test
     public void scopesOfChange() {
