@@ -12,7 +12,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,15 +29,13 @@ public class TypeAndScopeXmlGitCommitRepository implements TypesOfChangeReposito
     private static final String INNER_STORE_PATH = "/store";
     private static final String EXTERNAL_STORE_DIRECTORY_PATH = System.getProperty("user.home") + File.separator + ".git-commit-template";
 
-    private List<TypeOfChange> typeOfChanges = new ArrayList<>();
-    private List<ScopeOfChange> localScopeOfChanges = new ArrayList<>();
+    private final List<TypeOfChange> typeOfChanges = new ArrayList<>();
+    private final List<ScopeOfChange> localScopeOfChanges = new ArrayList<>();
 
     public TypeAndScopeXmlGitCommitRepository() {
         try {
             init();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XPathExpressionException e) {
+        } catch (IOException | XPathExpressionException e) {
             e.printStackTrace();
         }
     }

@@ -1,4 +1,4 @@
-# Git commit template Plugin for IntelliJ
+# Git commit template Plugin for IntelliJ IDEA
 
 **Thanks [MobileTribe](https://github.com/MobileTribe/commit-template-idea-plugin) for the idea and example.**
 

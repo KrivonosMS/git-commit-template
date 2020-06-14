@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 import ru.ezhov.git.commit.template.model.domain.CommitMessage;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 
 public class CommitDialog extends DialogWrapper {
 

@@ -1,8 +1,7 @@
 package ru.ezhov.git.commit.template.model.domain;
 
-import org.apache.commons.lang.WordUtils;
-
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import org.apache.commons.lang.WordUtils;
 
 public class CommitMessage {
     private static final int MAX_LINE_LENGTH = 72; // https://stackoverflow.com/a/2120040/5138796
@@ -19,7 +18,7 @@ public class CommitMessage {
     private String buildContent(TypeOfChange changeType, ScopeOfChange changeScope, String shortDescription, String longDescription, String closedIssues, String breakingChanges) {
         StringBuilder builder = new StringBuilder();
         builder.append(changeType.getName());
-        if (changeScope != null/*isNotBlank(changeScope.getName())*/) {
+        if (changeScope != null && isNotBlank(changeScope.getName())) {
             builder
                     .append('(')
                     .append(changeScope.getName())

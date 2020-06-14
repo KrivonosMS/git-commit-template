@@ -1,9 +1,9 @@
 package ru.ezhov.git.commit.template.model.domain;
 
 public class ScopeOfChange {
-    private String name;
-    private String title;
-    private String description;
+    private final String name;
+    private final String title;
+    private final String description;
 
     public ScopeOfChange(String name, String title, String description) {
         this.name = name;
@@ -25,6 +25,6 @@ public class ScopeOfChange {
 
     @Override
     public String toString() {
-        return String.format("%s - %s", name, description);
+        return name;
     }
 }

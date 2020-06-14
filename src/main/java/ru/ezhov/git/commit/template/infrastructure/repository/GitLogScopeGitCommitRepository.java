@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 public class GitLogScopeGitCommitRepository implements ScopesOfChangeRepository {
     private static final String GIT_LOG_COMMAND = "git log --all --format=%s";
 
-    private List<ScopeOfChange> gitLogScopeOfChanges = new ArrayList<>();
+    private final List<ScopeOfChange> gitLogScopeOfChanges = new ArrayList<>();
 
-    private File workingDirectory;
+    private final File workingDirectory;
 
     public GitLogScopeGitCommitRepository(File workingDirectory) {
         this.workingDirectory = workingDirectory;

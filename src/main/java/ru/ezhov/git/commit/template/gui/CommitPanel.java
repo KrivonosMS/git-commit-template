@@ -11,29 +11,37 @@ import ru.ezhov.git.commit.template.model.domain.TypeOfChange;
 import ru.ezhov.git.commit.template.model.repository.ScopesOfChangeRepository;
 import ru.ezhov.git.commit.template.model.repository.TypesOfChangeRepository;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 class CommitPanel extends JPanel {
     private JComboBox<TypeOfChange> changeType;
-    private JComboBox<ScopeOfChange> changeScopeLocal;
     private JComboBox<ScopeOfChange> changeScopeGit;
+    private JComboBox<ScopeOfChange> changeScopeLocal;
     private JTextField shortDescription;
     private JTextPane longDescription;
     private JTextField metaInformation;
     private JTextPane breakingChanges;
-    private TypesOfChangeRepository typesOfChangeRepository;
-    private ScopesOfChangeRepository scopesOfChangeRepositoryLocal;
-    private ScopesOfChangeRepository scopesOfChangeRepositoryGit;
+    private final TypesOfChangeRepository typesOfChangeRepository;
+    private final ScopesOfChangeRepository scopesOfChangeRepositoryLocal;
+    private final ScopesOfChangeRepository scopesOfChangeRepositoryGit;
 
     CommitPanel(Project project) {
         super(new BorderLayout());
         TypeAndScopeXmlGitCommitRepository typeAndScopeXmlGitCommitRepository = new TypeAndScopeXmlGitCommitRepository();
         this.typesOfChangeRepository = typeAndScopeXmlGitCommitRepository;
-        this.scopesOfChangeRepositoryLocal = typeAndScopeXmlGitCommitRepository;
         this.scopesOfChangeRepositoryGit = new GitLogScopeGitCommitRepository(new File(project.getBasePath()));
+        this.scopesOfChangeRepositoryLocal = typeAndScopeXmlGitCommitRepository;
 
         add(new TopPanel(), BorderLayout.NORTH);
         add(new CenterPanel(), BorderLayout.CENTER);
@@ -136,9 +144,12 @@ class CommitPanel extends JPanel {
         ChangeScopeLocalPanel() {
             super(new BorderLayout());
             List<ScopeOfChange> scopeOfChanges = scopesOfChangeRepositoryLocal.scopesOfChange();
-            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
-            scopeOfChanges.toArray(scopeOfChangesArray);
-            changeScopeLocal = new ComboBox(scopeOfChangesArray);
+            List<ScopeOfChange> scopeOfChangesResult = new ArrayList<>();
+            scopeOfChangesResult.add(new ScopeOfChange("", "", ""));
+            scopeOfChangesResult.addAll(scopeOfChanges);
+            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChangesResult.size()];
+            scopeOfChangesResult.toArray(scopeOfChangesArray);
+            changeScopeLocal = new ComboBox<>(scopeOfChangesArray);
 
             setBorder(BorderFactory.createTitledBorder("Local scope of this change"));
             changeScopeLocal.setEditable(true);
@@ -150,9 +161,12 @@ class CommitPanel extends JPanel {
         GitLogChangeScopeLocalPanel() {
             super(new BorderLayout());
             List<ScopeOfChange> scopeOfChanges = scopesOfChangeRepositoryGit.scopesOfChange();
-            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChanges.size()];
-            scopeOfChanges.toArray(scopeOfChangesArray);
-            changeScopeGit = new ComboBox(scopeOfChangesArray);
+            List<ScopeOfChange> scopeOfChangesResult = new ArrayList<>();
+            scopeOfChangesResult.add(new ScopeOfChange("", "", ""));
+            scopeOfChangesResult.addAll(scopeOfChanges);
+            ScopeOfChange[] scopeOfChangesArray = new ScopeOfChange[scopeOfChangesResult.size()];
+            scopeOfChangesResult.toArray(scopeOfChangesArray);
+            changeScopeGit = new ComboBox<>(scopeOfChangesArray);
 
             setBorder(BorderFactory.createTitledBorder("Git scope of this change"));
             changeScopeGit.setEditable(true);
