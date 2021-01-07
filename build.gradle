@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.10'
 }
 
-group 'ru.ezhov'
-version '1.0.2'
+group 'ru.krivonos'
+version '0.0.1'
 
 sourceCompatibility = 1.8
 
