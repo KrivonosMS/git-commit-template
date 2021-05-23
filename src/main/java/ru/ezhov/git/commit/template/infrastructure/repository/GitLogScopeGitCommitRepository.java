@@ -35,7 +35,7 @@ public class GitLogScopeGitCommitRepository implements ScopesOfChangeRepository 
         if (result.isSuccess()) {
             Set<String> scopes = new HashSet<>();
             String output = result.getOutput();
-            Pattern pattern = Pattern.compile("^[a-z]+(\\(.*\\)):");
+            Pattern pattern = Pattern.compile("^\\[.*\\] [a-z]+(\\(.*\\)):");
             String[] lines = output.split(System.lineSeparator());
             for (String line : lines) {
                 Matcher matcher = pattern.matcher(line);
